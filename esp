@@ -1,5 +1,3 @@
--- Extremely conceptual, non-functional.
-
 local aimbotEnabled = false
 local targetHead = true
 local fov = 60 -- Field of View in degrees
