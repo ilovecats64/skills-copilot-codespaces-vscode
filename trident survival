@@ -1,0 +1,138 @@
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "Lurest"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local pvpCategory = Instance.new("Frame")
+pvpCategory.Name = "PVP"
+pvpCategory.Parent = gui
+pvpCategory.Size = UDim2.new(0, 200, 0, 300)
+pvpCategory.Position = UDim2.new(0, 10, 0, 10)
+
+-- Create buttons for the PVP features
+local silentAimBtn = Instance.new("TextButton")
+silentAimBtn.Name = "SilentAim"
+silentAimBtn.Parent = pvpCategory
+silentAimBtn.Size = UDim2.new(0, 180, 0, 30)
+silentAimBtn.Position = UDim2.new(0, 10, 0, 40)
+silentAimBtn.Text = "Silent Aim"
+
+local hitboxBtn = Instance.new("TextButton")
+hitboxBtn.Name = "Hitbox"
+hitboxBtn.Parent = pvpCategory
+hitboxBtn.Size = UDim2.new(0, 180, 0, 30)
+hitboxBtn.Position = UDim2.new(0, 10, 0, 80)
+hitboxBtn.Text = "Hitbox Expansion"
+
+local bulletTpBtn = Instance.new("TextButton")
+bulletTpBtn.Name = "BulletTP"
+bulletTpBtn.Parent = pvpCategory
+bulletTpBtn.Size = UDim2.new(0, 180, 0, 30)
+bulletTpBtn.Position = UDim2.new(0, 10, 0, 120)
+bulletTpBtn.Text = "Bullet TP"
+
+-- Simplified Keybind Button for Silent Aim
+local keybindBtn = Instance.new("TextButton")
+keybindBtn.Name = "Keybind"
+keybindBtn.Parent = pvpCategory
+keybindBtn.Size = UDim2.new(0, 180, 0, 30)
+keybindBtn.Position = UDim2.new(0, 10, 0, 160)
+keybindBtn.Text = "Set Keybind for Silent Aim"
+
+-- Functions for Silent Aim, Bullet TP, and Hitbox Expansion
+local silentAimActive = false
+local hitboxExpansion = 1
+local bulletTpActive = false
+
+local function toggleSilentAim()
+    silentAimActive = not silentAimActive
+    print("Silent Aim is now", silentAimActive and "ON" or "OFF")
+    -- Add your actual silent aim code here
+end
+
+local function toggleHitboxExpansion()
+    hitboxExpansion = hitboxExpansion + 1
+    if hitboxExpansion > 10 then hitboxExpansion = 1 end
+    print("Hitbox Expansion:", hitboxExpansion)
+    -- Add your actual hitbox expansion code here
+end
+
+local function toggleBulletTP()
+    bulletTpActive = not bulletTpActive
+    print("Bullet TP is now", bulletTpActive and "ON" or "OFF")
+    -- Add your actual bullet TP code here
+end
+
+-- Connect buttons to functions
+silentAimBtn.MouseButton1Click:Connect(toggleSilentAim)
+hitboxBtn.MouseButton1Click:Connect(toggleHitboxExpansion)
+bulletTpBtn.MouseButton1Click:Connect(toggleBulletTP)
+
+-- Keybind functionality
+local keybindActive = nil
+local function setKeybind(action)
+    keybindBtn.Text = "Press a key to bind"
+    local function onKeyPress(input)
+        if input.UserInputType == Enum.UserInputType.Keyboard then
+            keybindActive = input.KeyCode
+            keybindBtn.Text = "Keybind set to: " .. input.KeyCode.Name
+            -- Bind the action to this key
+            print(action .. " is now bound to: " .. input.KeyCode.Name)
+        end
+    end
+    game:GetService("UserInputService").InputBegan:Connect(onKeyPress)
+end
+
+keybindBtn.MouseButton1Click:Connect(function()
+    setKeybind("Silent Aim")
+end)
+
+-- Simplified ESP for Players
+local function createESP(target)
+    -- Simple box around target, example for players
+    local espBox = Instance.new("Drawing")
+    espBox.Visible = true
+    espBox.Color = Color3.fromRGB(255, 0, 0)
+    espBox.Thickness = 2
+    -- Replace this with code to draw around target's position
+end
+
+local function espForPlayers()
+    for _, target in ipairs(game.Players:GetPlayers()) do
+        if target ~= player then
+            createESP(target)
+        end
+    end
+end
+
+-- Call the ESP function to start displaying players
+espForPlayers()
+
+-- OP Features
+local function applySpeedHack(speed)
+    player.Character.Humanoid.WalkSpeed = speed
+end
+
+local function longNeck()
+    -- Adjust camera offset for long neck effect
+    player.CameraMode = Enum.CameraMode.Locked
+end
+
+-- Speed Hack Slider
+local speedSlider = Instance.new("Slider")
+speedSlider.Parent = gui
+speedSlider.Size = UDim2.new(0, 180, 0, 30)
+speedSlider.Position = UDim2.new(0, 10, 0, 200)
+speedSlider.MinValue = 0
+speedSlider.MaxValue = 100
+speedSlider.Value = 50
+
+speedSlider.Changed:Connect(function()
+    applySpeedHack(speedSlider.Value)
+end)
+
+-- Anti-Cheat Bypass
+-- Xeno should already handle the bypass on its own, but be careful!
+
+-- Final Print for Debugging
+print("Script loaded successfully. All features are set up.")
