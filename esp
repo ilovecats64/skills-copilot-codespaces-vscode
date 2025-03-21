@@ -1,86 +1,75 @@
-local aimbotEnabled = false
-local targetHead = true
-local fov = 60 -- Field of View in degrees
+-- Create the ESP System
+local player = game.Players.LocalPlayer
+local espFolder = Instance.new("Folder")
+espFolder.Name = "ESP"
+espFolder.Parent = player:WaitForChild("PlayerGui")
 
--- Hypothetical GUI setup.
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game.Players.LocalPlayer.PlayerGui
+-- Function to create ESP for Players
+local function createESP(target)
+    -- Check if the target is a valid player
+    if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+        -- Create drawing for the ESP box
+        local box = Instance.new("Drawing")
+        box.Name = "ESPBox"
+        box.Visible = true
+        box.Color = Color3.fromRGB(255, 0, 0)
+        box.Thickness = 2
+        box.Transparency = 1
+        box.Filled = false
+        box.ZIndex = 10
 
-local aimbotButton = Instance.new("TextButton")
-aimbotButton.Parent = screenGui
-aimbotButton.Text = "Aimbot: Off"
-aimbotButton.Position = UDim2.new(0.1, 0, 0.1, 0)
-aimbotButton.Size = UDim2.new(0.2, 0, 0.1, 0)
+        -- Create a label to show the player's name
+        local label = Instance.new("TextLabel")
+        label.Name = "ESPLabel"
+        label.Visible = true
+        label.Text = target.Name
+        label.TextColor3 = Color3.fromRGB(255, 255, 255)
+        label.TextStrokeTransparency = 0.5
+        label.TextSize = 18
+        label.BackgroundTransparency = 1
+        label.Parent = espFolder
 
-aimbotButton.MouseButton1Click:Connect(function()
-  aimbotEnabled = not aimbotEnabled
-  if aimbotEnabled then
-    aimbotButton.Text = "Aimbot: On"
-  else
-    aimbotButton.Text = "Aimbot: Off"
-  end
+        -- Update the ESP box position and size
+        game:GetService("RunService").RenderStepped:Connect(function()
+            local screenPos = workspace.CurrentCamera:WorldToViewportPoint(target.Character.HumanoidRootPart.Position)
+
+            -- Update the box's position
+            box.Position = Vector2.new(screenPos.X - 50, screenPos.Y - 50)
+            box.Size = Vector2.new(100, 100)
+
+            -- Update the label's position
+            label.Position = UDim2.new(0, screenPos.X - 50, 0, screenPos.Y - 100)
+        end)
+
+        -- Add the ESP box to the ESP folder
+        box.Parent = espFolder
+    end
+end
+
+-- Function to remove ESP from a player
+local function removeESP(target)
+    if espFolder:FindFirstChild(target.Name) then
+        espFolder[target.Name]:Destroy()
+    end
+end
+
+-- Connect to Player Added and remove ESP when Player is removed
+game.Players.PlayerAdded:Connect(function(target)
+    target.CharacterAdded:Connect(function(character)
+        createESP(target)  -- Create ESP when the player spawns
+
+        -- Remove ESP if the character dies
+        if target.Character:FindFirstChild("Humanoid") then
+            target.Character.Humanoid.Died:Connect(function()
+                removeESP(target)  -- Remove ESP when the player dies
+            end)
+        end
+    end)
 end)
 
--- Hypothetical FOV ring drawing.
-local fovRing = Instance.new("Frame")
-fovRing.Parent = screenGui
-fovRing.BackgroundColor3 = Color3.new(1, 1, 1)
-fovRing.BackgroundTransparency = 0.5
-fovRing.BorderSizePixel = 1
-fovRing.BorderColor3 = Color3.new(0, 0, 0)
-fovRing.Size = UDim2.new(0, 200, 0, 200) -- Example size
-fovRing.Position = UDim2.new(0.5, -100, 0.5, -100) -- Center the ring
-
-local function getClosestHeadWithinFOV()
-  -- Hypothetically, this finds the closest head within the FOV.
-  -- This is where the impossible part happens.
-  local closestHead = nil
-  local closestDistance = math.huge
-  local camera = workspace.CurrentCamera
-  local cameraPosition = camera.CFrame.p
-  local cameraDirection = camera.CFrame.LookVector
-
-  -- Example of fake data.
-  local fakeHeads = {
-    {position = Vector3.new(10, 5, 20), player = {}},
-    {position = Vector3.new(30, 8, 40), player = {}},
-    {position = Vector3.new(1000,1000,1000), player = {}}
-  }
-
-  for _, headData in ipairs(fakeHeads) do
-    local headPosition = headData.position
-    local directionToHead = (headPosition - cameraPosition).Unit
-    local angle = math.deg(math.acos(cameraDirection:Dot(directionToHead)))
-
-    if angle <= fov / 2 then
-      local distance = (headPosition - cameraPosition).Magnitude
-      if distance < closestDistance then
-        closestDistance = distance
-        closestHead = headPosition
-      end
+-- Loop through all players and create ESP for existing players
+for _, target in ipairs(game.Players:GetPlayers()) do
+    if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+        createESP(target)  -- Create ESP for the player if they are already in the game
     end
-  end
-  return closestHead
 end
-
-local function aimAtHead(headPosition)
-  -- Hypothetically, this rotates the camera to aim at the head.
-  if headPosition then
-    local camera = workspace.CurrentCamera
-    local direction = (headPosition - camera.CFrame.p).Unit
-    local rotation = CFrame.lookAt(camera.CFrame.p, headPosition)
-    camera.CFrame = rotation
-  end
-end
-
-local function mainLoop()
-  while true do
-    if aimbotEnabled then
-      local headPosition = getClosestHeadWithinFOV()
-      aimAtHead(headPosition)
-    end
-    wait()
-  end
-end
-
-mainLoop()
