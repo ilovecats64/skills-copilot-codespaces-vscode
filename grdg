@@ -1,0 +1,133 @@
+local GuiService = game:GetService("GuiService")
+local player = game.Players.LocalPlayer
+local userInputService = game:GetService("UserInputService")
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "Lurest"
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Basic setup for categories
+local pvpCategory = Instance.new("Frame", screenGui)
+pvpCategory.Size = UDim2.new(0, 200, 0, 300)
+pvpCategory.Position = UDim2.new(0, 0, 0, 0)
+pvpCategory.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+pvpCategory.Visible = false
+
+local espCategory = Instance.new("Frame", screenGui)
+espCategory.Size = UDim2.new(0, 200, 0, 300)
+espCategory.Position = UDim2.new(0, 220, 0, 0)
+espCategory.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+espCategory.Visible = false
+
+local opCategory = Instance.new("Frame", screenGui)
+opCategory.Size = UDim2.new(0, 200, 0, 300)
+opCategory.Position = UDim2.new(0, 440, 0, 0)
+opCategory.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+opCategory.Visible = false
+
+local categoryNames = {"Silent Aim", "Hit Box Expander", "Bullet TP", "ESP for Players", "ESP for NPC", "ESP for Chests", "ESP for Ores", "ESP for Bags", "Bullet Tracer", "Speed Hack", "Free Cam", "Long Neck"}
+local buttonSize = UDim2.new(0, 180, 0, 50)
+
+-- Function to create buttons for each category
+local function createButton(parent, text, position)
+    local button = Instance.new("TextButton")
+    button.Size = buttonSize
+    button.Position = position
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    button.Parent = parent
+    return button
+end
+
+-- Create the buttons for each category
+for i, name in ipairs(categoryNames) do
+    if i <= 3 then
+        createButton(pvpCategory, name, UDim2.new(0, 10, 0, (i-1)*60))
+    elseif i <= 6 then
+        createButton(espCategory, name, UDim2.new(0, 10, 0, (i-4)*60))
+    else
+        createButton(opCategory, name, UDim2.new(0, 10, 0, (i-7)*60))
+    end
+end
+
+-- Make the GUI moveable
+local isDragging = false
+local dragInput, dragStart, startPos
+
+local function updateDrag(input)
+    local delta = input.Position - dragStart
+    screenGui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+local function onInputBegan(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDragging = true
+        dragStart = input.Position
+        startPos = screenGui.Position
+    end
+end
+
+local function onInputEnded(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDragging = false
+    end
+end
+
+-- Connect the events for dragging the GUI
+userInputService.InputBegan:Connect(onInputBegan)
+userInputService.InputEnded:Connect(onInputEnded)
+userInputService.InputChanged:Connect(function(input)
+    if isDragging then
+        updateDrag(input)
+    end
+end)
+
+-- Mobile button (for mobile players)
+local mobileButton = Instance.new("TextButton")
+mobileButton.Size = UDim2.new(0, 200, 0, 50)
+mobileButton.Position = UDim2.new(0, 10, 0, 10)
+mobileButton.Text = "Open Menu"
+mobileButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+mobileButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+mobileButton.Parent = screenGui
+mobileButton.Visible = userInputService.TouchEnabled
+
+-- PC toggle with right shift keybind
+local menuVisible = false
+local function toggleMenu()
+    menuVisible = not menuVisible
+    pvpCategory.Visible = menuVisible
+    espCategory.Visible = menuVisible
+    opCategory.Visible = menuVisible
+end
+
+-- Keybind for PC: Right Shift to open/close menu
+userInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        toggleMenu()
+    end
+end)
+
+-- Mobile button click to toggle the menu
+mobileButton.MouseButton1Click:Connect(function()
+    toggleMenu()
+end)
+
+-- This function allows the categories to be toggled on/off based on the selection
+local function toggleCategory(category)
+    category.Visible = not category.Visible
+end
+
+-- Function to create the mobile/PC button toggle for categories
+local function toggleCategoryVisibility(button, category)
+    button.MouseButton1Click:Connect(function()
+        toggleCategory(category)
+    end)
+end
+
+-- Example category button: toggle visibility of "Silent Aim" under PVP category
+local silentAimButton = createButton(pvpCategory, "Silent Aim", UDim2.new(0, 10, 0, 10))
+toggleCategoryVisibility(silentAimButton, pvpCategory)
+
+-- You can repeat the above steps to create buttons for all your features
