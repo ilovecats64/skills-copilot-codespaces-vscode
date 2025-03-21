@@ -1,0 +1,26 @@
+local function flingPlayer(target)
+    -- Make sure the target exists and has a Humanoid
+    if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = target.Character.HumanoidRootPart
+        
+        -- Create an invisible force to fling the player
+        local bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000) -- Powerful force
+        bodyVelocity.Velocity = Vector3.new(0, 500, 0)  -- Fling upwards
+        bodyVelocity.Parent = humanoidRootPart
+        
+        -- Destroy the force after a short time to avoid lasting effects
+        game:GetService("Debris"):AddItem(bodyVelocity, 0.1) -- The fling lasts for 0.1 seconds
+    end
+end
+
+-- Connect to a button or a trigger event
+game.Players.PlayerAdded:Connect(function(player)
+    -- You can replace this with any key press or event you'd like
+    player.CharacterAdded:Connect(function(character)
+        -- Replace the following with your method to select a target
+        if player.Name ~= game.Players.LocalPlayer.Name then
+            flingPlayer(player)
+        end
+    end)
+end)
