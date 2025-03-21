@@ -1,4 +1,3 @@
--- Setup for GUI
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 local camera = workspace.CurrentCamera
