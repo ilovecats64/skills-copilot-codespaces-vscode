@@ -1,9 +1,20 @@
--- XyntrixScripts Anti-Kick GUI with your original anti-kick logic
+-- XyntrixScripts Anti-Kick GUI (KRNL Compatible)
+
+-- Check compatibility
+if not (getrawmetatable and setreadonly and newcclosure and getnamecallmethod) then
+    warn("Your exploit does not support required functions for Anti-Kick.")
+    return
+end
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local mt = getrawmetatable(LocalPlayer)
+local success, mt = pcall(getrawmetatable, LocalPlayer)
+if not success then
+    warn("Failed to get metatable. Anti-Kick not applied.")
+    return
+end
+
 local pseudoEnv = {
     __index = mt.__index,
     __namecall = mt.__namecall
@@ -12,70 +23,69 @@ local ReturnFunc = function() end
 
 local hooked = false
 
--- Function to enable your anti-kick hook
+-- Function to enable anti-kick
 local function EnableAntiKick()
     if hooked then return end
     warn("Made By XyntrixScripts")
-    setreadonly(mt, false)
+    pcall(setreadonly, mt, false)
 
     mt.__namecall = newcclosure(function(self, ...)
-        local NameCallMethod = getnamecallmethod()
-        if type(NameCallMethod) == "string" then
-            if NameCallMethod == "Kick" or NameCallMethod == "kick" then
-                print("Prevented Kick At " .. tostring(os.time()))
-                return ReturnFunc
-            end
+        local method = getnamecallmethod()
+        if typeof(method) == "string" and (method:lower() == "kick") then
+            print("Kick attempt blocked at " .. os.time())
+            return ReturnFunc
         end
         return pseudoEnv.__namecall(self, ...)
     end)
 
     mt.__index = newcclosure(function(self, Index, ...)
-        if type(Index) == "string" then
-            if Index == "Kick" or Index == "kick" then
-                print("Prevented Kick At " .. tostring(os.time()))
-                return ReturnFunc
-            end
+        if typeof(Index) == "string" and Index:lower() == "kick" then
+            print("Kick index blocked at " .. os.time())
+            return ReturnFunc
         end
         return pseudoEnv.__index(self, Index, ...)
     end)
 
-    setreadonly(mt, true)
+    pcall(setreadonly, mt, true)
     hooked = true
 end
 
--- Function to disable hook and restore original metamethods
+-- Function to disable anti-kick
 local function DisableAntiKick()
     if not hooked then return end
-    setreadonly(mt, false)
+    pcall(setreadonly, mt, false)
     mt.__namecall = pseudoEnv.__namecall
     mt.__index = pseudoEnv.__index
-    setreadonly(mt, true)
+    pcall(setreadonly, mt, true)
     hooked = false
-    print("Anti-Kick Disabled at " .. tostring(os.time()))
+    print("Anti-Kick disabled at " .. os.time())
 end
 
--- Create GUI
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+-- GUI Setup
+local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "Xyntrix_AntiKick_GUI"
 ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game.CoreGui
 
-local Frame = Instance.new("Frame", ScreenGui)
+local Frame = Instance.new("Frame")
 Frame.Size = UDim2.new(0, 200, 0, 90)
 Frame.Position = UDim2.new(0, 20, 0, 200)
 Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Frame.BorderSizePixel = 0
 Frame.Active = true
 Frame.Draggable = true
+Frame.Parent = ScreenGui
 
-local Title = Instance.new("TextLabel", Frame)
+local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 30)
 Title.BackgroundColor3 = Color3.fromRGB(50, 0, 90)
 Title.Text = "Anti-Kick GUI"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 18
+Title.Parent = Frame
 
-local Toggle = Instance.new("TextButton", Frame)
+local Toggle = Instance.new("TextButton")
 Toggle.Size = UDim2.new(1, -20, 0, 40)
 Toggle.Position = UDim2.new(0, 10, 0, 40)
 Toggle.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
@@ -84,6 +94,7 @@ Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 Toggle.Font = Enum.Font.Gotham
 Toggle.TextSize = 16
 Toggle.BorderSizePixel = 0
+Toggle.Parent = Frame
 
 Toggle.MouseButton1Click:Connect(function()
     if hooked then
@@ -97,7 +108,7 @@ Toggle.MouseButton1Click:Connect(function()
     end
 end)
 
--- Auto-enable on script load
+-- Auto-enable on load
 EnableAntiKick()
 Toggle.Text = "Anti-Kick: ON"
 Toggle.BackgroundColor3 = Color3.fromRGB(0, 160, 100)
