@@ -1,0 +1,171 @@
+-- XyntrixScripts Camlock V5 – ULTRA AIM + Dot Restored, FOV Ring Removed, Mobile Safe
+local plr = game:GetService("Players").LocalPlayer
+local cam = workspace.CurrentCamera
+local rs = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+local sg = game:GetService("StarterGui")
+
+local target, locking, bulletTP = nil, false, true
+
+-- Blue Dot Tracker
+local dot = Drawing.new("Circle")
+dot.Radius = 4
+dot.Thickness = 2
+dot.Filled = true
+dot.Transparency = 0.75
+dot.Color = Color3.fromRGB(0, 120, 255)
+dot.Visible = false
+
+-- GUI Toggle Button
+local function createGuiButton()
+	pcall(function() plr.PlayerGui:FindFirstChild("XyntrixCamlockGui"):Destroy() end)
+
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "XyntrixCamlockGui"
+	gui.ResetOnSpawn = false
+	gui.IgnoreGuiInset = true
+	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	gui.Parent = plr:WaitForChild("PlayerGui")
+
+	local btn = Instance.new("TextButton")
+	btn.Name = "LockToggle"
+	btn.Size = UDim2.new(0, 120, 0, 45)
+	btn.Position = UDim2.new(0, 50, 0, 200)
+	btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 18
+	btn.Text = "LOCK OFF"
+	btn.Active = true
+	btn.Draggable = true
+	btn.Parent = gui
+
+	-- Sexy Credit Label with Centered Text
+	local credit = Instance.new("TextLabel")
+	credit.Name = "XyntrixCredit"
+	credit.Size = UDim2.new(0, 300, 0, 40)
+	credit.Position = UDim2.new(1, -320, 1, -50)
+	credit.AnchorPoint = Vector2.new(0, 0)
+	credit.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	credit.BackgroundTransparency = 0.25
+	credit.TextColor3 = Color3.fromRGB(255, 255, 255)
+	credit.Font = Enum.Font.GothamSemibold
+	credit.TextSize = 18
+
+	-- Center text horizontally and vertically
+	credit.TextXAlignment = Enum.TextXAlignment.Center
+	credit.TextYAlignment = Enum.TextYAlignment.Center
+
+	credit.Text = "Made by XyntrixScripts"
+	credit.TextTransparency = 1
+	credit.Parent = gui
+
+	-- Credit Fade + Discord Copy
+	task.spawn(function()
+		for i = 1, 0, -0.01 do
+			credit.TextTransparency = i
+			credit.BackgroundTransparency = 0.25 + (i * 0.75)
+			task.wait(0.015)
+		end
+
+		pcall(function()
+			if setclipboard then
+				setclipboard("https://discord.gg/VsGXQUwb")
+			end
+		end)
+
+		task.wait(4.5)
+
+		for i = 0, 1, 0.01 do
+			credit.TextTransparency = i
+			credit.BackgroundTransparency = 0.25 + (i * 0.75)
+			task.wait(0.015)
+		end
+	end)
+
+	return btn
+end
+
+pcall(function()
+	sg:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
+end)
+
+local btn = createGuiButton()
+
+-- Ultra Ping-Based Prediction
+local function getAccuratePing()
+	local ping = 0.14
+	pcall(function()
+		local stats = game:GetService("Stats")
+		local net = stats:FindFirstChild("Network"):FindFirstChild("ServerStatsItem")
+		if net and net:GetAttribute("Data") then
+			ping = tonumber(net:GetAttribute("Data")) / 1000
+		end
+	end)
+	return math.clamp(ping, 0.05, 0.25)
+end
+
+local function predictPos(char)
+	if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+	local hrp = char.HumanoidRootPart
+	local vel = hrp.AssemblyLinearVelocity or hrp.Velocity
+	local ping = getAccuratePing()
+	return hrp.Position + (vel * ping)
+end
+
+-- Closest Target To Crosshair
+local function getAimTarget()
+	local closest, dist = nil, math.huge
+	for _,v in ipairs(game.Players:GetPlayers()) do
+		if v ~= plr and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+			local pos, vis = cam:WorldToViewportPoint(predictPos(v.Character))
+			if vis then
+				local screenDist = (Vector2.new(pos.X, pos.Y) - cam.ViewportSize / 2).Magnitude
+				if screenDist < dist and screenDist < 300 then
+					closest = v
+					dist = screenDist
+				end
+			end
+		end
+	end
+	return closest
+end
+
+-- Lock Toggle
+btn.MouseButton1Click:Connect(function()
+	if locking then
+		locking = false
+		target = nil
+		btn.Text = "LOCK OFF"
+	else
+		target = getAimTarget()
+		if target then
+			locking = true
+			btn.Text = "LOCK ON"
+		end
+	end
+end)
+
+-- Bullet TP
+workspace.DescendantAdded:Connect(function(obj)
+	if bulletTP and obj:IsA("BasePart") and obj.Name:lower():find("bullet") then
+		task.wait(0.03)
+		if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+			local tp = predictPos(target.Character)
+			obj.Position = tp - (target.Character.HumanoidRootPart.CFrame.LookVector * 1.5)
+		end
+	end
+end)
+
+-- Camlock + Dot Visuals
+rs.RenderStepped:Connect(function()
+	if locking and target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+		local pred = predictPos(target.Character)
+		local screenPos, vis = cam:WorldToViewportPoint(pred)
+		dot.Position = Vector2.new(screenPos.X, screenPos.Y)
+		dot.Visible = vis
+		cam.CFrame = CFrame.new(cam.CFrame.Position, pred)
+	else
+		dot.Visible = false
+	end
+end)
