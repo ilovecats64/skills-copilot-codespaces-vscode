@@ -1,4 +1,4 @@
--- XyntrixScripts Camlock – ULTRA AIM v5 (Camlock + Bullet TP + Silent Aim + Kill Aura)
+-- XyntrixScripts Camlock (Camlock)
 local plr = game:GetService("Players").LocalPlayer
 local cam = workspace.CurrentCamera
 local rs = game:GetService("RunService")
