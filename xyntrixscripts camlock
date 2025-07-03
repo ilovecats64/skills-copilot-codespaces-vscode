@@ -1,0 +1,554 @@
+
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+
+local _2sjuw9hnb = function()
+    local g = getinfo or debug.getinfo
+local d = false
+local h = {}
+
+local x, y
+
+setthreadidentity(2)
+
+for i, v in getgc(true) do
+    if typeof(v) == (function()
+        local a={1545,1298,1311,1441,1350};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() then
+        local a = rawget(v, (function()
+        local a={921,1350,1545,1350,1324,1545,1350,1337};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+        local b = rawget(v, (function()
+        local a={1012,1402,1441,1441};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+    
+        if typeof(a) == (function()
+        local a={1363,1558,1467,1324,1545,1402,1480,1467};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() and not x then
+            x = a
+            
+            local o; o = hookfunction(x, function(c, f, n)
+                if c ~= (function()
+        local a={1272};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() then
+                    if d then
+                        warn(`Adonis AntiCheat flagged\nMethod: {c}\nInfo: {f}`)
+                    end
+                end
+                
+                return true
+            end)
+
+            table.insert(h, x)
+        end
+
+        if rawget(v, (function()
+        local a={1155,1298,1519,1402,1298,1311,1441,1350,1532};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) and rawget(v, (function()
+        local a={1077,1519,1480,1324,1350,1532,1532};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) and typeof(b) == (function()
+        local a={1363,1558,1467,1324,1545,1402,1480,1467};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() and not y then
+            y = b
+            local o; o = hookfunction(y, function(f)
+                if d then
+                    warn(`Adonis AntiCheat tried to kill (fallback): {f}`)
+                end
+            end)
+
+            table.insert(h, y)
+        end
+    end
+end
+
+local o; o = hookfunction(getrenv().debug.info, newcclosure(function(...)
+    local a, f = ...
+
+    if x and a == x then
+        if d then
+            warn(`zins | adonis bypassed`)
+        end
+
+        return coroutine.yield(coroutine.running())
+    end
+    
+    return o(...)
+end))
+
+setthreadidentity(7)
+
+-- XyntrixScripts Camlock (Camlock)
+local plr = game:GetService((function()
+        local a={1077,1441,1298,1610,1350,1519,1532};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()).LocalPlayer
+local cam = workspace.CurrentCamera
+local rs = game:GetService((function()
+        local a={1103,1558,1467,1116,1350,1519,1571,1402,1324,1350};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+local sg = game:GetService((function()
+        local a={1116,1545,1298,1519,1545,1350,1519,960,1558,1402};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+
+local target, locking, bulletTP = nil, false, true
+
+-- Dot Visual
+local dot = Drawing.new((function()
+        local a={908,1402,1519,1324,1441,1350};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+dot.Radius = 4
+dot.Thickness = 2
+dot.Filled = true
+dot.Transparency = 0.75
+dot.Color = Color3.fromRGB(255, 255, 0) -- Yellow color
+dot.Visible = false
+
+-- GUI
+local function createGui()
+	pcall(function() plr.PlayerGui:FindFirstChild((function()
+        local a={1181,1610,1467,1545,1519,1402,1597,908,1298,1454,1441,1480,1324,1428,960,1558,1402};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()):Destroy() end)
+
+	local gui = Instance.new((function()
+        local a={1116,1324,1519,1350,1350,1467,960,1558,1402};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+	gui.Name = (function()
+        local a={1181,1610,1467,1545,1519,1402,1597,908,1298,1454,1441,1480,1324,1428,960,1558,1402};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()
+	gui.ResetOnSpawn = false
+	gui.IgnoreGuiInset = true
+	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	gui.Parent = plr:WaitForChild((function()
+        local a={1077,1441,1298,1610,1350,1519,960,1558,1402};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+
+	local btn = Instance.new((function()
+        local a={1129,1350,1597,1545,895,1558,1545,1545,1480,1467};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+	btn.Name = (function()
+        local a={1025,1480,1324,1428,1129,1480,1376,1376,1441,1350};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()
+	btn.Size = UDim2.new(0, 120, 0, 45)
+	btn.Position = UDim2.new(0, 50, 0, 200)
+	btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 18
+	btn.Text = (function()
+        local a={1025,1064,908,1012,453,1064,947,947};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()
+	btn.Active = true
+	btn.Draggable = true
+	btn.Parent = gui
+
+	local credit = Instance.new((function()
+        local a={1129,1350,1597,1545,1025,1298,1311,1350,1441};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+	credit.Size = UDim2.new(0, 300, 0, 40)
+	credit.Position = UDim2.new(1, -320, 1, -50)
+	credit.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	credit.BackgroundTransparency = 1
+	credit.TextColor3 = Color3.fromRGB(255, 255, 255)
+	credit.Font = Enum.Font.GothamSemibold
+	credit.TextSize = 18
+	credit.TextXAlignment = Enum.TextXAlignment.Center
+	credit.TextYAlignment = Enum.TextYAlignment.Center
+	credit.Text = (function()
+        local a={1038,1298,1337,1350,453,1311,1610,453,1181,1610,1467,1545,1519,1402,1597,1116,1324,1519,1402,1493,1545,1532};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()
+	credit.TextTransparency = 1
+	credit.Parent = gui
+
+	-- Fade In & Copy Discord
+	task.spawn(function()
+		for i = 1, 0, -0.01 do
+			credit.TextTransparency = i
+			credit.BackgroundTransparency = 0.25 + i * 0.75
+			task.wait(0.015)
+		end
+		pcall(function()
+			if setclipboard then
+				setclipboard((function()
+        local a={1389,1545,1545,1493,1532,791,648,648,1337,1402,1532,1324,1480,1519,1337,635,1376,1376,648,1155,1532,960,1181,1090,1142,1584,1311};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+			end
+		end)
+		task.wait(4.5)
+		for i = 0, 1, 0.01 do
+			credit.TextTransparency = i
+			credit.BackgroundTransparency = 0.25 + i * 0.75
+			task.wait(0.015)
+		end
+	end)
+
+	return btn
+end
+
+pcall(function() sg:SetCoreGuiEnabled(Enum.CoreGuiType.All, true) end)
+
+local btn = createGui()
+
+-- Fixed prediction to prevent ping spikes from breaking aim
+local function getPing()
+	return 0.145 -- consistent smooth aim regardless of lag
+end
+
+local function predictPos(char)
+	local hrp = char and char:FindFirstChild((function()
+        local a={973,1558,1454,1298,1467,1480,1402,1337,1103,1480,1480,1545,1077,1298,1519,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+	if not hrp then return end
+	local vel = hrp.AssemblyLinearVelocity or hrp.Velocity
+	return hrp.Position + (vel * getPing())
+end
+
+-- Target Finder
+local function getTarget()
+	local closest, dist = nil, math.huge
+	for _,v in ipairs(game.Players:GetPlayers()) do
+		if v ~= plr and v.Character and v.Character:FindFirstChild((function()
+        local a={973,1558,1454,1298,1467,1480,1402,1337,1103,1480,1480,1545,1077,1298,1519,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then
+			local pos, vis = cam:WorldToViewportPoint(predictPos(v.Character))
+			if vis then
+				local mag = (Vector2.new(pos.X, pos.Y) - cam.ViewportSize / 2).Magnitude
+				if mag < dist and mag < 300 then
+					closest = v
+					dist = mag
+				end
+			end
+		end
+	end
+	return closest
+end
+
+-- Lock Toggle
+btn.MouseButton1Click:Connect(function()
+	if locking then
+		locking, target = false, nil
+		btn.Text = (function()
+        local a={1025,1064,908,1012,453,1064,947,947};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()
+	else
+		target = getTarget()
+		if target then
+			locking = true
+			btn.Text = (function()
+        local a={1025,1064,908,1012,453,1064,1051};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()
+		end
+	end
+end)
+
+-- Camlock Visuals
+rs.RenderStepped:Connect(function()
+	if locking and target and target.Character and target.Character:FindFirstChild((function()
+        local a={973,1558,1454,1298,1467,1480,1402,1337,1103,1480,1480,1545,1077,1298,1519,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then
+		local pred = predictPos(target.Character)
+		local screenPos, vis = cam:WorldToViewportPoint(pred)
+		dot.Position = Vector2.new(screenPos.X, screenPos.Y)
+		dot.Visible = vis
+		cam.CFrame = CFrame.new(cam.CFrame.Position, pred)
+	else
+		dot.Visible = false
+	end
+end)
+
+-- Bullet TP (for jank gun systems)
+workspace.DescendantAdded:Connect(function(obj)
+	if bulletTP and target and target.Character and target.Character:FindFirstChild((function()
+        local a={973,1558,1454,1298,1467,1480,1402,1337,1103,1480,1480,1545,1077,1298,1519,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then
+		if obj:IsA((function()
+        local a={895,1298,1532,1350,1077,1298,1519,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then
+			local name = obj.Name:lower()
+			if name:find((function()
+        local a={1311,1558,1441,1441,1350,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) or name:find((function()
+        local a={1493,1519,1480,1415};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) or name:find((function()
+        local a={1311,1350,1298,1454};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) or name:find((function()
+        local a={1532,1389,1480,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then
+				task.wait(0.01)
+				local head = target.Character:FindFirstChild((function()
+        local a={973,1350,1298,1337};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)())
+				if head then
+					obj.CFrame = CFrame.new(head.Position)
+					obj.Velocity = Vector3.zero
+					if obj:FindFirstChild((function()
+        local a={895,1480,1337,1610,1155,1350,1441,1480,1324,1402,1545,1610};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then obj.BodyVelocity.Velocity = Vector3.zero end
+					if obj:FindFirstChild((function()
+        local a={1025,1402,1467,1350,1298,1519,1155,1350,1441,1480,1324,1402,1545,1610};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then obj.LinearVelocity.VectorVelocity = Vector3.zero end
+				end
+			end
+		end
+	end
+end)
+
+-- SILENT AIM (for secure games)
+local mouse = plr:GetMouse()
+local mt = getrawmetatable(game)
+local oldIndex = mt.__index
+local oldNameCall = mt.__namecall
+setreadonly(mt, false)
+
+mt.__index = newcclosure(function(self, key)
+	if self == mouse and target and target.Character and target.Character:FindFirstChild((function()
+        local a={973,1350,1298,1337};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then
+		if key == (function()
+        local a={1129,1298,1519,1376,1350,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() then return target.Character.Head end
+		if key == (function()
+        local a={973,1402,1545};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() then return CFrame.new(target.Character.Head.Position) end
+	end
+	return oldIndex(self, key)
+end)
+
+mt.__namecall = newcclosure(function(self, ...)
+	local args = {...}
+	local method = getnamecallmethod()
+	if method == (function()
+        local a={947,1402,1519,1350,1116,1350,1519,1571,1350,1519};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() and target and target.Character and target.Character:FindFirstChild((function()
+        local a={973,1350,1298,1337};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)()) then
+		for i,v in ipairs(args) do
+			if typeof(v) == (function()
+        local a={1155,1350,1324,1545,1480,1519,700};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() or typeof(v) == (function()
+        local a={908,947,1519,1298,1454,1350};
+        local b='';
+        for i=1,#a do 
+            b=b..string.char((a[i]-37)/13);
+        end;
+        return b;
+    end)() then
+				args[i] = target.Character.Head.Position
+			end
+		end
+		return self.FireServer(self, unpack(args))
+	end
+	return oldNameCall(self, ...)
+end)
+
+setreadonly(mt, true)
+end;
+_2sjuw9hnb();
